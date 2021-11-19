@@ -1,0 +1,6 @@
+# These properties are populated by maven to be retrieved by Spring Boot actuator
+# these will be displayed when the /info endpoint is invoked
+info.app.artifactId=trackingStatus-service
+info.app.name=OrderTrackingInformationService
+info.app.description=tracking status
+info.app.version=0.0.1-SNAPSHOT

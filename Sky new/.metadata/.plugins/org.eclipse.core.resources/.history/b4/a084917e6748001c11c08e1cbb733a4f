@@ -1,0 +1,71 @@
+package nz.co.skytv.trackingStatus.controllers;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import nz.co.skytv.trackingStatus.common.Constants;
+import nz.co.skytv.trackingStatus.common.Messages;
+import nz.co.skytv.trackingStatus.models.entities.TrackingStatus;
+import nz.co.skytv.trackingStatus.models.responses.TrackingStatusResponse;
+import nz.co.skytv.trackingStatus.services.TrackingStatusService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * Tracking Status Controller Configuration. 
+ * @author Sanket Kumar
+ */
+
+@RestController
+@RequestMapping(value = "/item-tracking/v1/trackingStatus")
+public class TrackingStatusController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrackingStatusController.class);
+
+    @Autowired
+    private TrackingStatusService trackingStatusService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @GetMapping(value = "orderNumber/{order_number}", produces = Constants.CONTENT_TYPE_APPLICATION_JSON)
+    public ResponseEntity<Object> getTrackingStatusDetails(@PathVariable("order_number") String orderNumber) throws JsonProcessingException {
+    	
+    	LOGGER.debug(Messages.RECEIVED_REQ_GET_TRACKING_STATUS);
+    	ResponseEntity<Object> responseEntity = null;
+    	TrackingStatus trackingStatusResponse = trackingStatusService.getTrackingStatusByOrderNumber(orderNumber);
+		LOGGER.info(Messages.TRACKING_STATUS_RETRIEVED);
+		
+		String trackingStatusResponseJson = objectMapper.writeValueAsString(trackingStatusResponse);
+		LOGGER.debug(Messages.PREPARED_RESPONSE_GET_TRACKING_STATUS, trackingStatusResponseJson);
+		
+		responseEntity = new ResponseEntity<>(trackingStatusResponse, HttpStatus.OK);
+    	return responseEntity;
+    }
+    
+    @GetMapping(value = "accountNumber/{account_number}", produces = Constants.CONTENT_TYPE_APPLICATION_JSON)
+    public ResponseEntity<Object> getTrackingStatusDetailsByAccount(@RequestParam String houseNumber ,@PathVariable("account_number") String accountNumber) throws JsonProcessingException {
+    	
+    	LOGGER.debug(Messages.RECEIVED_REQ_GET_TRACKING_STATUS);
+    	ResponseEntity<Object> responseEntity = null;
+    	TrackingStatus trackingStatusResponse = trackingStatusService.getTrackingStatusByAccountNumber(accountNumber);
+		LOGGER.info(Messages.TRACKING_STATUS_RETRIEVED);
+		
+		String trackingStatusResponseJson = objectMapper.writeValueAsString(trackingStatusResponse);
+		LOGGER.debug(Messages.PREPARED_RESPONSE_GET_TRACKING_STATUS, trackingStatusResponseJson);
+		
+		responseEntity = new ResponseEntity<>(trackingStatusResponse, HttpStatus.OK);
+    	return responseEntity;
+    }
+    
+}

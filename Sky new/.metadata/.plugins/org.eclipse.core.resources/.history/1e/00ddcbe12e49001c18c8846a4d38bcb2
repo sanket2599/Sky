@@ -1,0 +1,5 @@
+package nz.co.skytv.trackingStatus.models.responses;
+
+public class TrackingStatusMapper {
+
+}

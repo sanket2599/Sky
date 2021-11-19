@@ -1,0 +1,52 @@
+parameters:
+  - name: env
+    values:
+      - dev
+      - prelive
+      - production
+
+variables:
+  MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
+  MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
+  IMAGE_NAME: entitlements-service
+  ARTIFACTORY_HOST: skydigital-docker-local.jfrog.io
+
+  ${{ if eq(parameters.env, 'dev') }}:
+    CLUSTER_NAME: sharedeks-devtest
+    NAMESPACE: msl-dev
+    NODE_SELECTOR_LABEL: dev
+    REPLICA: 1
+    MAX_HPA_REPLICA: 1
+    REQUEST_MEMORY: 300Mi
+    LIMIT_MEMORY: 500Mi
+    REQUEST_CPU: 100m
+    LIMIT_CPU: 200m
+    KUBECONFIG: /home/msl-team/.kube/config-dev
+    APM_URL: https://a82e67940edc422e96314299f60f8136.apm.ap-southeast-2.aws.cloud.es.io:443
+    APM_TOKEN: xATJP2ip8gFz8qpLpP
+  ${{ if eq(parameters.env, 'prelive') }}: 
+    CLUSTER_NAME: sharedeks-prelive-a
+    NAMESPACE: msl-prelive
+    NODE_SELECTOR_LABEL: prelive-a-logic
+    REPLICA: 2
+    MAX_HPA_REPLICA: 3
+    REQUEST_MEMORY: 300Mi
+    LIMIT_MEMORY: 500Mi
+    REQUEST_CPU: 100m
+    LIMIT_CPU: 200m
+    KUBECONFIG: /home/msl-team/.kube/config-prelive-a
+    APM_URL: https://a82e67940edc422e96314299f60f8136.apm.ap-southeast-2.aws.cloud.es.io:443
+    APM_TOKEN: xATJP2ip8gFz8qpLpP
+  ${{ if eq(parameters.env, 'production') }}:
+    CLUSTER_NAME: sharedeks-prod-a
+    NAMESPACE: msl-prod
+    NODE_SELECTOR_LABEL: prod-a-logic
+    REPLICA: 2
+    MAX_HPA_REPLICA: 3
+    REQUEST_MEMORY: 300Mi
+    LIMIT_MEMORY: 500Mi
+    REQUEST_CPU: 100m
+    LIMIT_CPU: 200m
+    KUBECONFIG: /home/msl-team/.kube/config-prod-a
+    APM_URL: https://8324284b828e4e048211d67fc01af386.apm.ap-southeast-2.aws.cloud.es.io:443
+    APM_TOKEN: ENDowS4UrFaYGqHC7R

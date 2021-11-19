@@ -1,0 +1,69 @@
+package nz.co.skytv.trackingStatus.models.entities;
+
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+/**
+ * Tracking Status Class
+ * @author Sanket Kumar
+ */
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Document
+public class TrackingStatus {
+
+	@Id
+	@JsonAlias("order_number")
+    @JsonProperty("order_number")
+    @Field("Order_Number")
+	private String orderNumber;
+	
+	@JsonAlias("account_number")
+    @JsonProperty("account_number")
+    @Field("Account_Number")
+	private String accountNumber;
+	
+	@JsonAlias("order_date")
+    @JsonProperty("order_date")
+    @Field("Order_Date")
+	private String orderDate;
+
+	@JsonAlias("order_status")
+    @JsonProperty("order_status")
+    @Field("Order_Status")
+	private String orderStatus;
+
+	@JsonAlias("expected_delivery_date")
+    @JsonProperty("expected_delivery_date")
+    @Field("Expected_Delivery_Date")
+	private String expectedDeliveryDate;
+
+	@JsonAlias("requested_delivery_date")
+    @JsonProperty("requested_delivery_date")
+    @Field("Requested_Delivery_Date")
+	private String requestedDeliveryDate;
+
+	@JsonAlias("email_address")
+    @JsonProperty("email_address")
+    @Field("Email_Address")
+	private String emailAddress;
+
+	@JsonAlias("primary_contact_no")
+    @JsonProperty("primary_contact_no")
+    @Field("Primary_Contact_No")
+	private String primaryContactNo;
+	
+	@JsonAlias("house_number")
+    @JsonProperty("house_number")
+    @Field("House_Number")
+	private String houseNumber;
+}

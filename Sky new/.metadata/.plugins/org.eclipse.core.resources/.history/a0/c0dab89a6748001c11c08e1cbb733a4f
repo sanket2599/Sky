@@ -1,0 +1,42 @@
+package nz.co.skytv.trackingStatus.services;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import nz.co.skytv.trackingStatus.common.Messages;
+import nz.co.skytv.trackingStatus.models.entities.TrackingStatus;
+import nz.co.skytv.trackingStatus.models.responses.TrackingStatusResponse;
+import nz.co.skytv.trackingStatus.repository.TrackingStatusRepository;
+
+@Service
+public class TrackingStatusServiceImpl implements TrackingStatusService {
+
+	@Autowired
+    private TrackingStatusRepository trackingStatusRepo;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrackingStatusServiceImpl.class);
+    
+
+	@Override
+	public TrackingStatus getTrackingStatusByOrderNumber(String orderNumber) {
+		TrackingStatus trackingStatus =null; //this.trackingStatusRepo.findById(orderNumber).get();
+		LOGGER.debug(Messages.MONGODB_RESULT_FOR_GET_TRACKING_STATUS_BY_ID, trackingStatus);
+		return null;
+//		return trackingStatus;
+	}
+
+
+	@Override
+	public TrackingStatus getTrackingStatusByAccountNumber(String accountNumber,String houseNumber) {
+		// TODO Auto-generated method stub
+		TrackingStatus trackingStatus = this.trackingStatusRepo.getTrackingStatus(accountNumber,houseNumber);
+		LOGGER.debug(Messages.MONGODB_RESULT_FOR_GET_TRACKING_STATUS_BY_ID, trackingStatus);
+//		return null;
+		return trackingStatus;
+	}
+
+}

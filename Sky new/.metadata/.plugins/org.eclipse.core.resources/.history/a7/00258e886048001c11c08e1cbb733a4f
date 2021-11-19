@@ -1,0 +1,40 @@
+pr: none
+trigger:
+  branches:
+    include:
+      - develop
+      - prelive
+      - master
+
+stages:
+  - stage: Dev
+    condition: |
+      and(
+        or(
+          eq(variables['Build.SourceBranch'], 'refs/heads/develop'), 
+          in(variables['Build.Reason'], 'Manual')
+        ),
+        ne(variables['Build.SourceBranch'], 'refs/heads/prelive'),
+        ne(variables['Build.SourceBranch'], 'refs/heads/master')
+      )
+    jobs:
+      - template: azure-jobs.yml
+        parameters:
+          env: dev
+          demandLabels: DeployToDevTest
+  
+  - stage: Prelive
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/prelive')
+    jobs:
+      - template: azure-jobs.yml
+        parameters:
+          env: prelive
+          demandLabels: DeployToPrelive
+
+  - stage: Prod
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    jobs:
+      - template: azure-jobs.yml
+        parameters:
+          env: production
+          demandLabels: DeployToProduction

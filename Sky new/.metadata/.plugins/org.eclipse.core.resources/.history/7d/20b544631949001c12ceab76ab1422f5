@@ -1,0 +1,19 @@
+package nz.co.skytv.entitlements.exception;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * ErrorResponse Class.
+ * @author Abhishek Kumar
+ */
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ErrorResponse {
+    private String code;
+    private String description;
+    private String message;
+}

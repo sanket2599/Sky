@@ -1,0 +1,45 @@
+package nz.co.skytv.trackingStatus.utils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+/**
+ * Utility Functions.
+ * 
+ * @author Abhishek Kumar
+ */
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class Utilities {
+
+    /**
+     * Function to Convert Object to List.
+     * @param obj : Input Object
+     * @return List<?>
+     */
+    public static List<Object> convertObjectToList1(Object obj) {
+        List<Object> list = new ArrayList<>();
+        if (obj.getClass().isArray()) {
+            // In case Instance of Array, preparing List from Array
+            list = Arrays.asList((Object[]) obj);
+        } else if (obj instanceof Collection) {
+            // In case Instance of Collection, preparing List from Collection
+            list = new ArrayList<>((Collection<?>) obj);
+        } else if (obj instanceof LinkedHashMap<?, ?>) {
+            // Mapping LinkedHashMap instance to Lists of object class
+            ObjectMapper objectMapper = new ObjectMapper();
+            Object convertedObj = objectMapper.convertValue(obj, Object.class);
+            list = Arrays.asList(convertedObj);
+        } else {
+            list.add(obj);
+        }
+        return list;
+    }
+
+}

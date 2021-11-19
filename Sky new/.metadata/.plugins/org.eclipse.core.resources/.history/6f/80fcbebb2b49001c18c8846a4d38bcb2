@@ -1,0 +1,5 @@
+package nz.co.skytv.trackingStatus.repository;
+
+public interface ShipmentRepository {
+
+}

@@ -1,0 +1,99 @@
+package nz.co.skytv.trackingStatus.services;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import nz.co.skytv.trackingStatus.common.Messages;
+import nz.co.skytv.trackingStatus.models.entities.Shipment;
+import nz.co.skytv.trackingStatus.models.entities.TrackingStatus;
+import nz.co.skytv.trackingStatus.models.responses.TrackingStatusMapper;
+import nz.co.skytv.trackingStatus.models.responses.TrackingStatusResponse;
+import nz.co.skytv.trackingStatus.repository.ShipmentRepository;
+import nz.co.skytv.trackingStatus.repository.TrackingStatusRepository;
+
+/**
+ * Tracking Status Service Class.
+ * 
+ * @author Sanket Kumar and Soumya Mitra
+ *
+ */
+@Service
+public class TrackingStatusServiceImpl implements TrackingStatusService {
+
+	@Autowired
+	private TrackingStatusRepository trackingStatusRepo;
+
+	@Autowired
+	private ShipmentRepository shipmentRepo;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(TrackingStatusServiceImpl.class);
+
+	/**
+	 * Function to Get Tracking Status By Order Number.
+	 *
+	 * @param orderNumber
+	 * 
+	 * @return TrackingStatus
+	 */
+	@Override
+	public Object getTrackingStatusByOrderNumber(String orderNumber) {
+
+		TrackingStatus trackingStatus = this.trackingStatusRepo.getTrackingStatusByOrderNo(orderNumber);
+		Object object = null;
+		if (((TrackingStatus) trackingStatus).getOrderStatus().equals("shipped")) {
+			TrackingStatusMapper mapper = new TrackingStatusMapper();
+			Shipment shipment = this.shipmentRepo.getTrackingStatusByOrderNo(orderNumber);
+			System.out.println(trackingStatus);
+			System.out.println(shipment);
+			mapper.getTrackingStatusResponse(trackingStatus, shipment);
+			object = new TrackingStatusMapper();
+			object = mapper;
+			System.out.println(object);
+
+		} else {
+			object = new TrackingStatus();
+			object = trackingStatus;
+		}
+		LOGGER.debug(Messages.MONGODB_RESULT_FOR_GET_TRACKING_STATUS_BY_ID, trackingStatus);
+		return object;
+	}
+
+	/**
+	 * Function to Get Tracking Status By Account Number and House Number.
+	 *
+	 * @param accountNumber
+	 * @param houseNumber
+	 * 
+	 * @return List<TrackingStatus>
+	 */
+
+	@Override
+	public List<TrackingStatus> getTrackingStatusByAccountNumber(String accountNumber, String houseNumber) {
+
+		List<TrackingStatus> trackingStatus = this.trackingStatusRepo.getTrackingStatus(accountNumber, houseNumber);
+		LOGGER.debug(Messages.MONGODB_RESULT_FOR_GET_TRACKING_STATUS_BY_ID, trackingStatus);
+		return trackingStatus;
+	}
+
+	/**
+	 * Function to Get Tracking Status By Tracking Number.
+	 *
+	 * @param trackingNumber
+	 * 
+	 * @return TrackingStatus
+	 */
+	@Override
+	public Shipment getTrackingStatusByTrackingNumber(String trackingStatus, String trackingNumber) {
+
+		Shipment shipment = this.shipmentRepo.getTrackingStatusByTrackingNo(trackingStatus, trackingNumber);
+
+		LOGGER.debug(Messages.MONGODB_RESULT_FOR_GET_TRACKING_STATUS_BY_ID, shipment);
+
+		return shipment;
+	}
+
+}

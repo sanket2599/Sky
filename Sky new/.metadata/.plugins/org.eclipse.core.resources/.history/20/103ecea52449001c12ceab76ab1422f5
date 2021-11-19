@@ -1,0 +1,5 @@
+package nz.co.skytv.trackingStatus.models.entities;
+
+public class Shipment {
+
+}

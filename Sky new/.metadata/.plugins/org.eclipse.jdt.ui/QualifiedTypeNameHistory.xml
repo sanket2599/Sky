@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="org.springframework.data.mongodb.repository.Query"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="org.springframework.data.annotation.Id"/>
+    <fullyQualifiedTypeName name="org.springframework.http.ResponseEntity"/>
+    <fullyQualifiedTypeName name="nz.co.skytv.trackingStatus.exception.ErrorResponse"/>
+    <fullyQualifiedTypeName name="nz.co.skytv.trackingStatus.common.ResponseCode"/>
+    <fullyQualifiedTypeName name="nz.co.skytv.trackingStatus.exception.APIException"/>
+    <fullyQualifiedTypeName name="org.springframework.dao.DataAccessResourceFailureException"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestParam"/>
+    <fullyQualifiedTypeName name="java.lang.String"/>
+    <fullyQualifiedTypeName name="nz.co.skytv.trackingStatus.repository.ShipmentRepository"/>
+    <fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Autowired"/>
+    <fullyQualifiedTypeName name="com.fasterxml.jackson.annotation.JsonIgnore"/>
+    <fullyQualifiedTypeName name="nz.co.skytv.trackingStatus.models.entities.Shipment"/>
+    <fullyQualifiedTypeName name="nz.co.skytv.trackingStatus.models.responses.TrackingStatusMapper"/>
+    <fullyQualifiedTypeName name="java.lang.Object"/>
+    <fullyQualifiedTypeName name="nz.co.skytv.trackingStatus.models.responses.TrackingStatusResponse"/>
+    <fullyQualifiedTypeName name="java.io.Serializable"/>
+    <fullyQualifiedTypeName name="lombok.NoArgsConstructor"/>
+    <fullyQualifiedTypeName name="lombok.Data"/>
+    <fullyQualifiedTypeName name="com.fasterxml.jackson.annotation.PropertyAccessor"/>
+    <fullyQualifiedTypeName name="com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility"/>
+    <fullyQualifiedTypeName name="com.fasterxml.jackson.databind.ObjectMapper"/>
+    <fullyQualifiedTypeName name="java.lang.System.Logger"/>
+    <fullyQualifiedTypeName name="nz.co.skytv.trackingStatus.models.entities.TrackingStatus"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.PostMapping"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestBody"/>
+    <fullyQualifiedTypeName name="com.fasterxml.jackson.annotation.JsonProperty"/>
+    <fullyQualifiedTypeName name="nz.co.skytv.trackingStatus.models.responses.ShipmentCallbackResonse"/>
+    <fullyQualifiedTypeName name="nz.co.skytv.trackingStatus.models.responses.ShipmentCallbackResponse"/>
+    <fullyQualifiedTypeName name="java.time.LocalDate"/>
+    <fullyQualifiedTypeName name="java.lang.System"/>
+</qualifiedTypeNameHistroy>

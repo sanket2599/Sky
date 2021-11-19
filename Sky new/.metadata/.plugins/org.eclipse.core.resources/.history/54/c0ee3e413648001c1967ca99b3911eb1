@@ -1,0 +1,27 @@
+package nz.co.skytv.trackingStatus.config;
+
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * Application Bean Function.
+ * @author Sanket Kumar
+ */
+
+@Configuration
+public class Beans {
+
+    /**
+     * Creating @Bean of ObjectMapper with can be Autowired.
+     * @return ObjectMapper
+     */
+    @Bean
+    public ObjectMapper objectMapper() {
+        // Configuring ObjectMapper Classes
+        final ObjectMapper oObjectMapper = new ObjectMapper();
+        oObjectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+        return oObjectMapper;
+    }
+}

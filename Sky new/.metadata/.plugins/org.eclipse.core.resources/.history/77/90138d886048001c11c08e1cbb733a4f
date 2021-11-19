@@ -1,0 +1,124 @@
+parameters:
+  - name: env
+    values:
+      - dev
+      - prelive
+      - production
+  - name: demandLabels
+    type: string
+
+jobs:
+  - job: build_${{ parameters.env }}
+    displayName: Build 
+    pool:
+      vmImage: ubuntu-18.04
+    variables:
+      - group: 'Artifactory Credentials'
+      - template: azure-vars.yml
+        parameters:
+          env: ${{ parameters.env }}
+    timeoutInMinutes: 20
+    steps:
+      - checkout: self
+
+      - task: Cache@2
+        inputs:
+          key: 'maven | "$(Agent.OS)" | pom.xml'
+          restoreKeys: |
+            maven | "$(Agent.OS)"
+            maven
+          path: $(MAVEN_CACHE_FOLDER)
+        displayName: cache maven local repo
+
+      - task: Maven@3
+        inputs:
+          mavenPomFile: 'pom.xml'
+          mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
+          javaHomeOption: 'JDKVersion'
+          jdkVersionOption: '11'
+          jdkArchitectureOption: 'x64'
+          publishJUnitResults: true
+          testResultsFiles: '**/surefire-reports/TEST-*.xml'
+          goals: 'package'
+          sqAnalysisEnabled: false #run sonarqube
+          options: 'clean package spring-boot:repackage -Dmaven.test.skip -e'
+        displayName: 'build jar file'
+
+      - script: |
+          cd target
+          ls -lta
+          cd ../
+
+          docker build --build-arg env_variable=${{ parameters.env }} --build-arg APM_URL=$(APM_URL) --build-arg APM_TOKEN=$(APM_TOKEN)  -f Dockerfile -t $(ARTIFACTORY_HOST)/skytvnz/$(IMAGE_NAME):$(Build.SourceBranchName)-$(Build.BuildNumber) .
+          
+          docker images
+        displayName: 'build image'
+
+      - script: |
+          docker login $(ARTIFACTORY_HOST) --username $(ARTIFACTORY_USERNAME) --password $(ARTIFACTORY_PASSWORD)
+          docker push $(ARTIFACTORY_HOST)/skytvnz/$(IMAGE_NAME):$(Build.SourceBranchName)-$(Build.BuildNumber)
+        displayName: 'push image'
+
+  - deployment: deploy_${{ parameters.env }}
+    displayName: Deploy
+    dependsOn: build_${{ parameters.env }}
+    pool:
+      name: Default
+      demands: ${{ parameters.demandLabels }}
+    workspace:
+      clean: resources      
+    environment: ${{ parameters.env }}
+    variables:
+      - group: 'Artifactory Credentials'
+      - template: azure-vars.yml
+        parameters:
+          env: ${{ parameters.env }}
+    timeoutInMinutes: 20
+    strategy:
+      runOnce:
+        deploy:              
+          steps:
+          - checkout: self
+
+          - script: |
+              kubectl config use-context $(CLUSTER_NAME)
+
+              # Required to be able to deploy to dev
+              export KUBECONFIG=$(KUBECONFIG)
+              
+              kubectl create secret docker-registry skyweb-artifactory-pull-secret -n $(NAMESPACE) \
+                    --docker-server=$(ARTIFACTORY_HOST) \
+                    --docker-username=$(ARTIFACTORY_USERNAME) \
+                    --docker-password=$(ARTIFACTORY_PASSWORD) \
+                    --docker-email=joseph.nguyen@sky.co.nz  \
+                    --dry-run=client -o yaml | kubectl apply -f -
+
+            displayName: 'create image pull secret'
+
+          - script: |
+              export NAMESPACE=$(NAMESPACE)
+              export SERVICE_NAME=$(IMAGE_NAME)-service
+              export APP_NAME=$(IMAGE_NAME)
+              export ENVIRONMENT=${{ parameters.env }}
+              export IMAGE=$(ARTIFACTORY_HOST)/skytvnz/$(IMAGE_NAME):$(Build.SourceBranchName)-$(Build.BuildNumber)
+              export REPLICA=$(REPLICA)
+              export MAX_HPA_REPLICA=$(MAX_HPA_REPLICA)
+              export REQUEST_MEMORY=$(REQUEST_MEMORY)
+              export REQUEST_CPU=$(REQUEST_CPU)
+              export LIMIT_MEMORY=$(LIMIT_MEMORY)
+              export LIMIT_CPU=$(LIMIT_CPU)
+              export PULL_SECRET=skyweb-artifactory-pull-secret
+              export NODE_SELECTOR_LABEL=$(NODE_SELECTOR_LABEL)
+
+              # Replace placeholder with actual value then apply
+
+              if [ ${{ parameters.env }} != "dev" ]; then
+                envsubst < azure-entitlements-service-hpa.yml | kubectl apply -f -
+              fi
+            
+              envsubst < azure-entitlements-service-deployment.yml | kubectl apply -f -
+              #--dry-run=server
+
+              kubectl rollout status deployment/$(IMAGE_NAME) -n $(NAMESPACE)
+
+            displayName: 'apply deployment'
